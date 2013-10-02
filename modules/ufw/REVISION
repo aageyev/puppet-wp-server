@@ -1,0 +1,4 @@
+module: attachmentgenie/ufw
+version: 1.2.0
+url: file:///var/lib/puppet/puppet-module/cache/http_forge_puppetlabs_com-75a31f1d6f1ef6eb63b4479b3512ee1508209a7f/attachmentgenie-ufw-1.2.0.tar.gz
+installed: Thu Jul 25 13:50:57 +0000 2013

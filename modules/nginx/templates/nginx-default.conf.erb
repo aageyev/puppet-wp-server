@@ -1,0 +1,35 @@
+user www-data;
+worker_processes <%= worker_processes %>;
+<% if worker_rlimit_nofile != '' %>worker_rlimit_nofile <%= worker_rlimit_nofile %>;<% end %>
+pid /var/run/nginx.pid;
+
+events {
+	worker_connections <%= worker_connections %>;
+	<% if multi_accept == 'on' %>
+	multi_accept on;
+	<% else %>
+	multi_accept off;
+	<% end %>
+	use epoll;
+}
+
+http {
+	sendfile                  off;
+	tcp_nopush                off;
+	tcp_nodelay               off;
+	keepalive_timeout         15;
+	types_hash_max_size       2048;
+	server_tokens             off;
+	server_name_in_redirect   off;
+
+	include                   /etc/nginx/mime.types;
+	default_type              application/octet-stream;
+
+	include                   /etc/nginx/log.formats;
+	access_log                /var/log/nginx/access.log;
+	error_log                 /var/log/nginx/error.log;
+
+	gzip off;
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+}

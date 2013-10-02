@@ -1,0 +1,50 @@
+server {
+	listen      <%= ip + ":" + port %>;
+	server_name <%= title %>;
+	root        <%= app_root_path %>;
+	index       <%= index_file %>;
+
+	access_log  /var/log/nginx/<%= title %>-access.log csv1;
+	error_log   /var/log/nginx/<%= title %>-error.log;
+
+	location ^~ /v3/configs/ {
+		deny all;
+	}
+
+	location ~* ^.+.(swf|jpg|jpeg|gif|css|png|js|ico|xml|woff|ttf)$ {
+		access_log        off;
+		expires           max;
+	}
+
+	location ^~ /v3/templates/ {
+		expires           max;
+	}
+	location ^~ /wp-content/uploads/ {
+		expires           max;
+	}
+
+	location ~* ^.+\.(htaccess|svn|tpl)$ {
+		deny all;
+	}
+
+	location ~.php {
+		fastcgi_pass                 <%= upstream %>;
+		include                      fastcgi_params;
+		fastcgi_intercept_errors     on;
+		fastcgi_ignore_client_abort  off;
+	}
+
+	location / {
+		try_files $uri $uri/ @phpcgi;
+	}
+
+  location @phpcgi {
+    fastcgi_split_path_info ^(.+\.php)(.*)$;
+    fastcgi_pass                 <%= upstream %>;
+    fastcgi_index                <%= index_file %>;
+    include                      fastcgi_params;
+    fastcgi_param                SCRIPT_FILENAME  $document_root/<%= index_file %>;
+    fastcgi_intercept_errors     on;
+    fastcgi_ignore_client_abort  off;
+   }
+}

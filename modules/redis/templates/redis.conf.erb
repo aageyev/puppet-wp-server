@@ -1,0 +1,49 @@
+daemonize yes
+pidfile /var/run/redis/redis-server.pid
+port <%= port %>
+bind <%= ip %>
+<% if unix_socket %>
+unixsocket <%= unix_socket %>
+<% end %>
+
+timeout 300
+
+# Set server verbosity to 'debug'
+# it can be one of:
+# debug (a lot of information, useful for development/testing)
+# verbose (many rarely useful info, but not a mess like the debug level)
+# notice (moderately verbose, what you want in production probably)
+# warning (only very important / critical messages are logged)
+loglevel notice
+logfile /var/log/redis/redis-server.log
+
+databases 16
+
+save 900 1
+save 300 10
+save 60 10000
+
+rdbcompression yes
+dbfilename dump.rdb
+dir /var/lib/redis
+
+
+appendonly no
+appendfsync everysec
+no-appendfsync-on-rewrite no
+
+vm-enabled no
+vm-swap-file /var/lib/redis/redis.swap
+vm-max-memory 0
+vm-page-size 32
+vm-pages 134217728
+vm-max-threads 4
+
+
+hash-max-zipmap-entries 512
+hash-max-zipmap-value 64
+list-max-ziplist-entries 512
+list-max-ziplist-value 64
+set-max-intset-entries 512
+
+activerehashing yes

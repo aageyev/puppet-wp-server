@@ -1,0 +1,14 @@
+<% if backend.kind_of?(Array) -%>
+upstream <%= title %>  {
+	<% if ip_hash == true %>
+	ip_hash;
+	<% end %>
+<% backend.each do |backend_node| -%>
+	server <%= backend_node %>;
+<% end -%>
+}
+<% else -%>
+upstream <%= title %>  {
+	server <%= backend %>;
+}
+<% end -%>
